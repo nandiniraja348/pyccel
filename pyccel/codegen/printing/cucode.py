@@ -156,7 +156,6 @@ class CuCodePrinter(CCodePrinter):
         return "%s.%s[%s]" % (base_name, dtype, "+ ".join(indices))
     
     def function_signature(self, expr):
-        # print(expr)
         args = list(expr.arguments)
         if len(expr.results) == 1:
             ret_type = self.get_declare_type(expr.results[0])
@@ -181,7 +180,6 @@ class CuCodePrinter(CCodePrinter):
             return '{0}\n{1}{2}({3})'.format(decorator, ret_type, name, arg_code)
 
     def _print_Assign(self, expr):
-        # print(expr, expr.rhs, type(expr.rhs))
         if isinstance(expr.rhs, FunctionCall) and isinstance(expr.rhs.dtype, NativeTuple):
             self._temporary_args = [VariableAddress(a) for a in expr.lhs]
             return '{};'.format(self._print(expr.rhs))

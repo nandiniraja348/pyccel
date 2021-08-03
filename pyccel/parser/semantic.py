@@ -823,7 +823,6 @@ class SemanticParser(BasicParser):
         classes = type(expr).__mro__
         for cls in classes:
             annotation_method = '_visit_' + cls.__name__
-            # print("<<<<", annotation_method)
             if hasattr(self, annotation_method):
                 obj = getattr(self, annotation_method)(expr, **settings)
                 if isinstance(obj, Basic) and self._current_fst_node:
@@ -1109,7 +1108,6 @@ class SemanticParser(BasicParser):
                     if new_name != rhs_name:
                         if hasattr(func, 'clone'):
                             func  = func.clone(new_name)
-                    # print(func, args)
                     return self._handle_function(func, args, **settings)
                 elif isinstance(rhs, Constant):
                     var = first[rhs_name]
@@ -1135,7 +1133,6 @@ class SemanticParser(BasicParser):
                 bounding_box=(self._current_fst_node.lineno, self._current_fst_node.col_offset),
                 severity='fatal', blocker=True)
 
-        print("o")
         if first.cls_base:
             attr_name = [i.name for i in first.cls_base.attributes]
 
@@ -1313,7 +1310,6 @@ class SemanticParser(BasicParser):
             return expr
 
     def _visit_KernelCall(self, expr, **settings):
-        # print(expr.func, type(expr.func))
         func = self._visit(expr.func, **settings)
         return KernelCall(func, expr.dims)
 
@@ -1508,7 +1504,6 @@ class SemanticParser(BasicParser):
                             d_lhs.update(allows_negative_indexes=True)
 
                 # Create new variable
-                # print("rhs >>> ", rhs)
                 lhs = self._create_variable(name, dtype, rhs, d_lhs)
 
                 # Add variable to scope
@@ -1704,8 +1699,6 @@ class SemanticParser(BasicParser):
         rhs = expr.rhs
         lhs = expr.lhs
 
-        # print(lhs, '=', rhs)
-        # print(type(lhs), '=', type(rhs))
         if isinstance(rhs, FunctionCall):
             name = rhs.funcdef
             macro = self.get_macro(name)
@@ -1786,7 +1779,6 @@ class SemanticParser(BasicParser):
                         return FunctionCall(master, args, self._current_function)
 
         else:
-            # print(">>>>>", rhs)
             rhs = self._visit(rhs, **settings)
         if isinstance(rhs, FunctionDef):
 
@@ -1825,7 +1817,6 @@ class SemanticParser(BasicParser):
             return CodeBlock(stmts)
 
         elif isinstance(rhs, FunctionCall):
-            print(rhs.funcdef)
             func = rhs.funcdef
             if isinstance(func, FunctionDef):
                 results = func.results
@@ -1883,13 +1874,9 @@ class SemanticParser(BasicParser):
                 d_var_i['rank' ]  = dvar['rank']
 
         else:
-            # print('>>', rhs)
             if isinstance(rhs, CupyRawKernel):
-                # print(rhs.name, rhs.code)
                 func = CKernelDef(rhs.code,rhs.name)
                 self.insert_function(func)
-                # return CodeBlock([func])
-            # print(self.code)
             d_var  = self._infere_type(rhs, **settings)
             d_list = d_var if isinstance(d_var, list) else [d_var]
 
@@ -3173,7 +3160,4 @@ if __name__ == '__main__':
         raise ValueError('Expecting an argument for filename')
 
     parser = SyntaxParser(filename)
-#    print(parser.namespace)
     parser = SemanticParser(parser)
-#    print(parser.ast)
-#    parser.view_namespace('variables')

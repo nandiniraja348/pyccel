@@ -275,8 +275,6 @@ def execute_pyccel(fname, *,
     if semantic_only:
         return
 
-    print('\n\n\n')
-    print(parser.module_parser.parse())
     if parser.module_parser:
         parsers = [parser.module_parser, parser]
         program_name = os.path.basename(os.path.splitext(parser.filename)[0])
@@ -331,9 +329,6 @@ def execute_pyccel(fname, *,
         # Iterate over the internal_libs list and determine if the printer
         # requires an internal lib to be included.
         for lib in internal_libs:
-           # print(internal_libs)
-           # print(lib)
-           # print(codegen.get_printer_imports())
             if lib in codegen.get_printer_imports():
                 # get the include folder path and library files
                 if lib not in internal_libs_name:
@@ -358,10 +353,8 @@ def execute_pyccel(fname, *,
                         ext = (lang_ext_dict['c'], lang_ext_dict['ccuda'])
                     else:
                         ext = lang_ext_dict[language]
-                   # print(ext)
                     source_files = [os.path.join(lib_dest_path, e) for e in os.listdir(lib_dest_path)
                                                                 if e.endswith(ext)]
-                   # print(lib_dest_path, source_files)
                     internal_modules = [os.path.splitext(f)[0] for f in source_files]
 
                     # compile library source files
